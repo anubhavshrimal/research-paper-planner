@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="A comprehensive questionnaire tool to help researchers structure and plan their research papers based on Michael Black's writing guidance.">
+    <meta name="keywords"
+        content="research paper, scientific writing, paper structure, academic writing, questionnaire">
+    <meta name="author" content="Research Paper Questionnaire Tool">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Research Paper Questionnaire Tool">
+    <meta property="og:description"
+        content="A comprehensive questionnaire tool to help researchers structure and plan their research papers.">
+    <meta property="og:type" content="website">
+
+    <title>Research Paper Questionnaire</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #2c3e50;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+            font-family: inherit;
+            font-size: 14px;
+            box-sizing: border-box;
+            /* Ensures padding is included in width calculation */
+            max-width: 100%;
+            /* Prevents textarea from extending beyond its container */
+            resize: vertical;
+            /* Allows only vertical resizing */
+            overflow-x: auto;
+            /* Adds horizontal scrollbar if content is too wide */
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 60px;
+            /* Height of the status bar plus padding */
+            background-color: white;
+            z-index: 99;
+            padding-top: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border: none;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            margin-right: 5px;
+            color: #333;
+        }
+
+        .tab-button.active {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .status-bar {
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .export-button {
+            background-color: #27ae60;
+        }
+
+        .export-button:hover {
+            background-color: #2ecc71;
+        }
+
+        /* Info button and sidebar styles */
+        .info-button {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            margin-left: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        .info-button:hover {
+            background-color: #2980b9;
+        }
+
+        .info-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .info-sidebar.active {
+            right: 0;
+        }
+
+        .info-sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-sidebar-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .info-sidebar-close {
+            cursor: pointer;
+            font-size: 24px;
+            color: #7f8c8d;
+        }
+
+        .info-sidebar-content {
+            line-height: 1.6;
+        }
+
+        .info-sidebar-content h3 {
+            color: #3498db;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .info-sidebar-content p {
+            margin-bottom: 15px;
+        }
+
+        .info-sidebar-content blockquote {
+            border-left: 3px solid #3498db;
+            padding-left: 15px;
+            margin-left: 0;
+            color: #555;
+            font-style: italic;
+        }
+
+        .info-sidebar-content .example {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .info-sidebar-content .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="position: relative; z-index: 101; margin-top: 10px;">Research Paper Questionnaire</h1>
+
+    <div class="paper-title-container" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <label for="paper-title" style="font-weight: bold;">Paper/Idea Title:</label>
+            <div class="questionnaire-selector" style="display: flex; align-items: center;">
+                <select id="questionnaire-select"
+                    style="padding: 5px; border: 1px solid #ddd; border-radius: 4px; margin-right: 5px;">
+                    <!-- Will be populated dynamically -->
+                </select>
+                <button id="new-questionnaire" title="Create new questionnaire"
+                    style="padding: 5px 10px; margin-right: 5px;">+</button>
+                <button id="delete-questionnaire" title="Delete current questionnaire"
+                    style="padding: 5px 10px; background-color: #e74c3c;">🗑️</button>
+            </div>
+        </div>
+        <input type="text" id="paper-title" placeholder="Enter the title of your paper or research idea"
+            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; box-sizing: border-box;">
+    </div>
+
+    <div class="status-bar">
+        <div>Progress: <span id="progress">0%</span></div>
+        <div>
+            <button id="save-button">Save Progress</button>
+            <button id="clear-button" style="background-color: #e74c3c;">Clear Progress</button>
+            <button id="import-button" style="background-color: #9b59b6; margin-right: 5px;">Import</button>
+            <input type="file" id="import-file" accept=".json" style="display: none;">
+            <div class="dropdown" style="display: inline-block; position: relative;">
+                <button id="export-button" class="export-button">Export ▼</button>
+                <div class="dropdown-content"
+                    style="display: none; position: absolute; background-color: #f9f9f9; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 101; right: 0;">
+                    <a href="#" id="export-pdf"
+                        style="color: black; padding: 12px 16px; text-decoration: none; display: block;">Export as
+                        PDF</a>
+                    <a href="#" id="export-markdown"
+                        style="color: black; padding: 12px 16px; text-decoration: none; display: block;">Export as
+                        Markdown</a>
+                    <a href="#" id="export-json"
+                        style="color: black; padding: 12px 16px; text-decoration: none; display: block;">Export as
+                        JSON</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-buttons">
+        <button class="tab-button active" data-section="part1">Part 1: Idea Formulation</button>
+        <button class="tab-button" data-section="part2">Part 2: Content Preparation</button>
+        <button class="tab-button" data-section="part3">Part 3: Best Practices</button>
+    </div>
+
+    <!-- Part 1: Idea Formulation and Core Story -->
+    <div id="part1" class="section">
+        <h2>Part 1: Idea Formulation and Core Story</h2>
+        <p>This section focuses on clarifying your research idea, identifying your core contribution, and mapping out
+            your narrative.</p>
+
+        <h3>1. Defining Your Core Idea</h3>
+
+        <div class="question">
+            <div class="question-text">What is the central problem you are trying to solve? (Be specific and concise)
+            </div>
+            <textarea id="q1_1" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Why is this problem important, and why should anyone care? (Focus on impact and
+                relevance)</div>
+            <textarea id="q1_2" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What specific impediment has prevented this from being solved effectively by
+                previous work? (Identify the bottleneck or limitation)</div>
+            <textarea id="q1_3" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What is your hypothesis? Is it clearly testable, and how will you verify its
+                truth or falsity? (Must be a falsifiable statement)</div>
+            <textarea id="q1_4" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What is your "Nugget"? (Your single most important key insight that makes the
+                impossible, possible. This is the "how you see the world differently" aspect.)</div>
+            <textarea id="q1_5" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>2. Understanding Your Audience and Impact</h3>
+
+        <div class="question">
+            <div class="question-text">Who is your primary audience for this paper? (e.g., specific sub-field, general
+                AI/ML researchers, practitioners)</div>
+            <textarea id="q1_6" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Who will likely build upon your work? (Consider the future impact and potential
+                follow-up research)</div>
+            <textarea id="q1_7" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>3. Crafting Your Narrative (Goal, Problem, Solution)</h3>
+
+        <div class="question">
+            <div class="question-text">What is the "Goal" you will define for the reader, and why is it desirable? (What
+                do you want the reader to desire?)</div>
+            <textarea id="q1_8" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What is the "Problem" you will present that prevents this goal from being
+                achieved? (What creates tension/drama?)</div>
+            <textarea id="q1_9" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What is your "Solution" (your clever idea/Nugget) that overcomes this obstacle?
+                (How do you become the hero?)</div>
+            <textarea id="q1_10" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Can you outline a layered Goal → Problem → Solution cycle if your paper has
+                multiple insights?</div>
+            <textarea id="q1_11" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>4. Distilling Your Message</h3>
+
+        <div class="question">
+            <div class="question-text">What is your elevator pitch? (Describe your paper's core idea in three sentences
+                or fewer)</div>
+            <textarea id="q1_12" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What is your "teaser" image/figure? (What single visual would explain your core
+                idea to someone instantly?)</div>
+            <textarea id="q1_13" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>5. Related Work and Evaluation</h3>
+
+        <div class="question">
+            <div class="question-text">What are the key previous works directly relevant to your research?</div>
+            <textarea id="q1_14" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Specifically, where do these previous works fall short, creating a gap for your
+                research? (This illuminates your path forward)</div>
+            <textarea id="q1_15" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">How will you quantitatively evaluate your method? (What metrics, datasets,
+                comparisons?)</div>
+            <textarea id="q1_16" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What is your "demo"? How will you convincingly show that your idea works? (Beyond
+                quantitative metrics, what qualitative demonstration?)</div>
+            <textarea id="q1_17" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="nav-buttons">
+            <div></div> <!-- Empty div for spacing -->
+            <button class="next-button" data-next="part2">Next: Content Preparation</button>
+        </div>
+    </div>
+
+    <!-- Part 2: Section-by-Section Content Preparation -->
+    <div id="part2" class="section hidden">
+        <h2>Part 2: Section-by-Section Content Preparation</h2>
+        <p>This section guides you through preparing the specific content for each part of your paper.</p>
+
+        <h3>1. Title and Acronym</h3>
+
+        <div class="question">
+            <div class="question-text">Brainstorm 3-5 potential titles for your paper. (Aim for short, suggestive
+                poetry)</div>
+            <textarea id="q2_1" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What relevant nouns and verbs describe your method? (For acronym generation)
+            </div>
+            <textarea id="q2_2" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Based on the above, brainstorm 3-5 potential acronyms. (Aim for catchy,
+                pronounceable, semantic, and searchable)</div>
+            <textarea id="q2_3" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>2. Abstract</h3>
+        <p><em>Using the "Mad Libs" template as a guide, fill in the blanks with your specific content.</em></p>
+
+        <div class="question">
+            <div class="question-text">[Your topic] is widely used in computer vision/AI/etc. and has applications in
+                [your application].</div>
+            <textarea id="q2_4" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Recent work has addressed this problem by [describe previous approach].</div>
+            <textarea id="q2_5" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Unfortunately, all of these approaches [describe their key limitation].</div>
+            <textarea id="q2_6" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">In contrast, we [insert your nugget/key insight].</div>
+            <textarea id="q2_7" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">This fixes [the previous problem], however, it does not solve [a new, smaller
+                problem].</div>
+            <textarea id="q2_8" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Consequently, we develop a novel [your technical contribution].</div>
+            <textarea id="q2_9" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">While promising, [describe a challenge with your solution] is non-trivial.</div>
+            <textarea id="q2_10" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">Therefore, we further [describe your final technical piece].</div>
+            <textarea id="q2_11" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">We evaluate [your method] qualitatively and quantitatively on [your datasets] and
+                find that it is more accurate than the state of the art.</div>
+            <textarea id="q2_12" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>3. Introduction</h3>
+
+        <div class="question">
+            <div class="question-text">How will you state why your topic (X) is important and why it remains unsolved?
+                (Focus on the problem, not your interest)</div>
+            <textarea id="q2_13" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What are your explicit contributions that you will state in the introduction?
+                (e.g., "Our contributions are...")</div>
+            <textarea id="q2_14" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">How will you introduce your "Nugget" and frame it as the solution to the core
+                problem?</div>
+            <textarea id="q2_15" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>4. Previous / Related Work</h3>
+
+        <div class="question">
+            <div class="question-text">What are the main themes or common approaches that group the previous papers
+                you've identified?</div>
+            <textarea id="q2_16" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">How will you structure this section to provide insight into the field's history,
+                leading up to your work, rather than just a list of citations?</div>
+            <textarea id="q2_17" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>5. Experiments / Results / Evaluation</h3>
+
+        <div class="question">
+            <div class="question-text">What are the specific quantitative metrics you will use to evaluate your method?
+            </div>
+            <textarea id="q2_18" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What datasets will you use, and why are they appropriate?</div>
+            <textarea id="q2_19" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What baseline methods or state-of-the-art approaches will you compare against?
+            </div>
+            <textarea id="q2_20" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">How will you present your qualitative results or "demo" to convincingly show your
+                idea works? (e.g., specific examples, visualizations)</div>
+            <textarea id="q2_21" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What are the key findings or takeaways from your experiments that you want to
+                highlight?</div>
+            <textarea id="q2_22" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>6. Discussion / Limitations / Future Work</h3>
+
+        <div class="question">
+            <div class="question-text">What are the clear limitations or weaknesses of your current work? (Be honest and
+                objective)</div>
+            <textarea id="q2_23" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">How will you frame these limitations as clear opportunities for future research?
+            </div>
+            <textarea id="q2_24" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What broader implications or interesting discussions can arise from your results?
+            </div>
+            <textarea id="q2_25" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>7. Conclusion</h3>
+
+        <div class="question">
+            <div class="question-text">How will you succinctly summarize the main contribution and findings of your
+                paper?</div>
+            <textarea id="q2_26" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What is the single most important message you want the reader to take away from
+                your paper?</div>
+            <textarea id="q2_27" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="prev-button" data-prev="part1">Previous: Idea Formulation</button>
+            <button class="next-button" data-next="part3">Next: Best Practices</button>
+        </div>
+    </div>
+
+    <!-- Part 3: General Best Practices & Strategy -->
+    <div id="part3" class="section hidden">
+        <h2>Part 3: General Best Practices & Strategy</h2>
+        <p>This section helps you consider the overall approach and reviewer's perspective.</p>
+
+        <h3>1. Thinking Like a Reviewer</h3>
+
+        <div class="question">
+            <div class="question-text">What do you anticipate a reviewer will identify as the key ideas and significance
+                of your work?</div>
+            <textarea id="q3_1" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What do you expect a reviewer to highlight as the strengths of your paper?</div>
+            <textarea id="q3_2" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What potential weaknesses or unsupported claims might a reviewer question? (How
+                will you address or mitigate these?)</div>
+            <textarea id="q3_3" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <h3>2. Readiness and Risks</h3>
+
+        <div class="question">
+            <div class="question-text">Do you have all the necessary data to support your claims and evaluations?</div>
+            <textarea id="q3_4" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="question">
+            <div class="question-text">What are the key risks to completing this paper on time or with the desired
+                results? (e.g., missing data, unresolved bugs, lack of specific expertise)</div>
+            <textarea id="q3_5" placeholder="Your answer here..."></textarea>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="prev-button" data-prev="part2">Previous: Content Preparation</button>
+            <div></div> <!-- Empty div for spacing -->
+        </div>
+    </div>
+
+    <!-- Info Sidebar -->
+    <div class="info-sidebar" id="info-sidebar">
+        <div class="info-sidebar-header">
+            <div class="info-sidebar-title">Writing Guidance</div>
+            <div class="info-sidebar-close" id="info-sidebar-close">&times;</div>
+        </div>
+        <div class="info-sidebar-content" id="info-sidebar-content">
+            <!-- Content will be dynamically populated -->
+        </div>
+    </div>
+
+    <!-- Load guidance content -->
+    <script src="guidance-part1.js"></script>
+    <script src="guidance-part2.js"></script>
+    <script src="guidance-part3.js"></script>
+    <script src="guidance-loader.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
