@@ -263,6 +263,57 @@
 <body>
     <h1 style="position: relative; z-index: 101; margin-top: 10px;">Research Paper Questionnaire</h1>
 
+    <!-- Introduction Section -->
+    <div class="intro-section"
+        style="margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; background-color: #f0f7fb; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+            <h2 style="margin-top: 0; color: #2c3e50; display: flex; align-items: center;">
+                <span style="display: inline-block; margin-right: 10px; font-size: 24px;">ℹ️</span>
+                About This Tool
+            </h2>
+            <button id="toggle-intro"
+                style="background: none; border: none; color: #3498db; cursor: pointer; font-size: 14px; padding: 5px;">
+                Hide Details ▲
+            </button>
+        </div>
+
+        <div id="intro-content">
+            <p>
+                This questionnaire helps researchers structure and plan their scientific papers through guided
+                reflection questions.
+                Based on <a href="https://medium.com/@black_51980/writing-a-good-scientific-paper-c0f8af480c91"
+                    target="_blank" style="color: #3498db; text-decoration: none; font-weight: bold;">Michael Black's
+                    writing guidance</a>,
+                this tool walks you through the process of:
+            </p>
+
+            <ul style="padding-left: 25px; margin-bottom: 20px;">
+                <li><strong>Part 1: Idea Formulation</strong> - Clarify your research idea, core contribution, and
+                    narrative</li>
+                <li><strong>Part 2: Content Preparation</strong> - Plan each section of your paper methodically</li>
+                <li><strong>Part 3: Best Practices</strong> - Consider the reviewer perspective and anticipate questions
+                </li>
+            </ul>
+
+            <p>
+                Your answers are automatically saved in your browser. You can export your work as PDF, Markdown, or
+                JSON,
+                and import previously saved work. You can also manage multiple questionnaires for different papers.
+            </p>
+
+            <div style="display: flex; margin-top: 20px; gap: 15px;">
+                <button id="get-started"
+                    style="background-color: #3498db; color: white; border: none; border-radius: 4px; padding: 10px 15px; cursor: pointer; display: flex; align-items: center;">
+                    Get Started <span style="margin-left: 5px;">▼</span>
+                </button>
+                <a href="https://medium.com/@black_51980/writing-a-good-scientific-paper-c0f8af480c91" target="_blank"
+                    style="background-color: #f1f1f1; color: #333; text-decoration: none; border: none; border-radius: 4px; padding: 10px 15px; cursor: pointer; display: flex; align-items: center;">
+                    Read Original Blog Post <span style="margin-left: 5px;">↗</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="paper-title-container" style="margin-bottom: 20px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
             <label for="paper-title" style="font-weight: bold;">Paper/Idea Title:</label>

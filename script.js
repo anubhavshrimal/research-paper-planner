@@ -185,6 +185,37 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update dropdown and load current questionnaire
     updateQuestionnaireSelector();
 
+    // Introduction section functionality
+    const toggleIntroBtn = document.getElementById('toggle-intro');
+    const introContent = document.getElementById('intro-content');
+    const getStartedBtn = document.getElementById('get-started');
+    const introSection = document.querySelector('.intro-section');
+
+    // Check if the user has previously hidden the intro
+    if (localStorage.getItem('hideIntro') === 'true') {
+        introContent.style.display = 'none';
+        toggleIntroBtn.textContent = 'Show Details ▼';
+    }
+
+    // Toggle intro visibility
+    toggleIntroBtn.addEventListener('click', function () {
+        if (introContent.style.display === 'none') {
+            introContent.style.display = 'block';
+            toggleIntroBtn.textContent = 'Hide Details ▲';
+            localStorage.setItem('hideIntro', 'false');
+        } else {
+            introContent.style.display = 'none';
+            toggleIntroBtn.textContent = 'Show Details ▼';
+            localStorage.setItem('hideIntro', 'true');
+        }
+    });
+
+    // Scroll to questionnaire when "Get Started" is clicked
+    getStartedBtn.addEventListener('click', function () {
+        const paperTitleContainer = document.querySelector('.paper-title-container');
+        paperTitleContainer.scrollIntoView({ behavior: 'smooth' });
+    });
+
     // Tab Navigation
     const tabButtons = document.querySelectorAll('.tab-button');
     const sections = document.querySelectorAll('.section');
