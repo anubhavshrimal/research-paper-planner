@@ -165,6 +165,21 @@ document.addEventListener('DOMContentLoaded', function () {
     allTextareas = document.querySelectorAll('textarea');
     totalQuestions = allTextareas.length;
 
+    // Add input event listener to all textareas for real-time color coding
+    allTextareas.forEach(textarea => {
+        textarea.addEventListener('input', function () {
+            // Apply appropriate class based on content
+            if (this.value.trim() !== '') {
+                // Use default styling for filled textareas
+                this.classList.remove('textarea-empty');
+                this.classList.remove('textarea-filled');
+            } else {
+                this.classList.add('textarea-empty');
+                this.classList.remove('textarea-filled');
+            }
+        });
+    });
+
     // Get paper title input and questionnaire controls
     paperTitleInput = document.getElementById('paper-title');
     questionnaireSelect = document.getElementById('questionnaire-select');
@@ -524,14 +539,122 @@ function loadProgress() {
 function updateProgress() {
     answeredQuestions = 0;
 
+    // Track section-specific progress
+    const sectionQuestions = {
+        part1: { total: 0, answered: 0 },
+        part2: { total: 0, answered: 0 },
+        part3: { total: 0, answered: 0 }
+    };
+
+    // Process each textarea
     allTextareas.forEach(textarea => {
+        // Get the section this textarea belongs to
+        const section = textarea.closest('.section').id;
+
+        // Update section question count
+        if (section in sectionQuestions) {
+            sectionQuestions[section].total++;
+        }
+
+        // Check if the textarea has content
         if (textarea.value.trim() !== '') {
             answeredQuestions++;
+
+            // Update section answered count
+            if (section in sectionQuestions) {
+                sectionQuestions[section].answered++;
+            }
+
+            // Remove any styling for filled textareas (use default style)
+            textarea.classList.remove('textarea-empty');
+            textarea.classList.remove('textarea-filled');
+        } else {
+            // Apply empty style
+            textarea.classList.add('textarea-empty');
+            textarea.classList.remove('textarea-filled');
         }
     });
 
+    // Update overall progress
     const progressPercentage = Math.round((answeredQuestions / totalQuestions) * 100);
     document.getElementById('progress').textContent = `${progressPercentage}%`;
+
+    // Update section progress indicators
+    updateSectionProgress('part1', sectionQuestions.part1);
+    updateSectionProgress('part2', sectionQuestions.part2);
+    updateSectionProgress('part3', sectionQuestions.part3);
+
+    // Update tab progress indicators
+    updateTabProgress();
+}
+
+// Update progress indicator for a specific section
+function updateSectionProgress(sectionId, progress) {
+    const section = document.getElementById(sectionId);
+
+    // Create or get section progress element
+    let sectionProgress = section.querySelector('.section-progress');
+    if (!sectionProgress) {
+        // Create new progress elements if they don't exist
+        sectionProgress = document.createElement('div');
+        sectionProgress.className = 'section-progress';
+
+        const progressBar = document.createElement('div');
+        progressBar.className = 'section-progress-bar';
+
+        const progressFill = document.createElement('div');
+        progressFill.className = 'section-progress-fill';
+
+        progressBar.appendChild(progressFill);
+        sectionProgress.appendChild(progressBar);
+
+        // Insert after the section's paragraph
+        const insertAfter = section.querySelector('p');
+        insertAfter.parentNode.insertBefore(sectionProgress, insertAfter.nextSibling);
+    }
+
+    // Calculate percentage
+    const percentage = progress.total > 0 ? Math.round((progress.answered / progress.total) * 100) : 0;
+
+    // Update progress text and bar
+    sectionProgress.innerHTML = `
+        <div>Questions answered: ${progress.answered}/${progress.total} (${percentage}%)</div>
+        <div class="section-progress-bar">
+            <div class="section-progress-fill" style="width: ${percentage}%"></div>
+        </div>
+    `;
+}
+
+// Update progress indicators in tabs
+function updateTabProgress() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+
+    tabButtons.forEach(button => {
+        const sectionId = button.getAttribute('data-section');
+        const section = document.getElementById(sectionId);
+
+        // Count questions and answers in this section
+        const textareas = section.querySelectorAll('textarea');
+        const total = textareas.length;
+        let answered = 0;
+
+        textareas.forEach(textarea => {
+            if (textarea.value.trim() !== '') {
+                answered++;
+            }
+        });
+
+        // Create or update tab progress indicator
+        let tabProgress = button.querySelector('.tab-progress');
+        if (!tabProgress) {
+            tabProgress = document.createElement('span');
+            tabProgress.className = 'tab-progress';
+            button.appendChild(tabProgress);
+        }
+
+        // Update text
+        tabProgress.textContent = `(${answered}/${total})`;
+    });
 }
 
 // Export questionnaire as HTML/PDF
