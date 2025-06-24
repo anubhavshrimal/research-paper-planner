@@ -257,6 +257,43 @@
         .notification.show {
             opacity: 1;
         }
+
+        /* Color-coded text fields - only for empty fields */
+        .textarea-empty {
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            background-color: rgba(231, 76, 60, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        /* Section progress indicators */
+        .section-progress {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .section-progress-bar {
+            height: 6px;
+            background-color: #eee;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .section-progress-fill {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Tab progress indicators */
+        .tab-progress {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 12px;
+            color: #666;
+        }
     </style>
 </head>
 
